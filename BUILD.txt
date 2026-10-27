@@ -1,0 +1,5 @@
+Commit: 3b66a7a515967dc8ee76ac9bc119bdc69351c382
+Run: 40499807049
+DirectML: false
+Diagnostics: true
+Zip: Kisyo-Tune-test-3b66a7a5-aradiag-Windows-x64-plugin-only.zip
