@@ -1,1 +1,109 @@
+# Builds the Windows (x64, DirectML) VST3 for an existing GitHub release
+# and attaches the ZIP to it. Test builds use the supplied ref and keep the
+# ZIP as a workflow artifact without changing the release.
+name: Windows release build
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to build and attach to (e.g. v0.1.0)"
+        required: true
+      ref:
+        description: "Test build: build this branch or commit instead of the tag and keep the ZIP as a workflow artifact (the release is not changed)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+env:
+  RELEASE_TAG: ${{ inputs.tag }}
+  DIRECTML_VERSION: "1.15.4"
+
+jobs:
+  windows-x64:
+    runs-on: windows-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout the source with submodules
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || inputs.tag }}
+          submodules: recursive
+          persist-credentials: false
+
+      - name: Download DirectML Runtime
+        shell: pwsh
+        run: |
+          $dmlUrl = "https://www.nuget.org/api/v2/package/Microsoft.AI.DirectML/$env:DIRECTML_VERSION"
+          Invoke-WebRequest -Uri $dmlUrl -OutFile "directml.nupkg"
+
+          # Extract the NuGet package (a ZIP archive).
+          Expand-Archive -Path "directml.nupkg" -DestinationPath "directml_pkg" -Force
+
+          New-Item -ItemType Directory -Force -Path "vendor/directml/bin" | Out-Null
+          Copy-Item -Path "directml_pkg/bin/x64-win/DirectML.dll" -Destination "vendor/directml/bin/"
+
+          Write-Host "DirectML $env:DIRECTML_VERSION downloaded successfully"
+          Get-ChildItem "vendor/directml/bin/"
+
+      - name: Configure
+        run: cmake -B build -DUSE_DIRECTML=ON -DUSE_BUNDLED_DIRECTML_RUNTIME=ON -DUSE_ASIO=ON -DENABLE_NOTE_STRETCH=OFF -DPITCHNET_DEV_BUILD=OFF -DPITCHNET_ARA_DIAGNOSTICS=OFF -DPITCHNET_BUILD_TESTS=OFF
+
+      - name: Build the VST3
+        run: cmake --build build --config Release --target PitchNetPlugin_VST3 --parallel
+
+      - name: Check the VST3 like a host does
+        shell: pwsh
+        run: ./tools/windows/check-vst3.ps1 -Vst3 "build/PitchNetPlugin_artefacts/Release/VST3/Kinu Tune.vst3"
+
+      - name: Package
+        id: package
+        shell: pwsh
+        run: |
+          $version = "$env:RELEASE_TAG".TrimStart('v')
+          $name = "Kinu-Tune-$version-Windows-x64-DirectML"
+          $vst3Path = "build/PitchNetPlugin_artefacts/Release/VST3/Kinu Tune.vst3"
+
+          New-Item -ItemType Directory -Force -Path "$name/models", "$name/licenses" | Out-Null
+          Copy-Item -Recurse $vst3Path "$name/"
+
+          # Bundle DirectML.dll beside the VST3 binary.
+          $packagedVst3Path = Join-Path $name "Kinu Tune.vst3"
+          $vst3ArchPath = Join-Path $packagedVst3Path "Contents/x86_64-win"
+          if (-not (Test-Path "vendor/directml/bin/DirectML.dll")) {
+            throw "DirectML.dll was not found in vendor/directml/bin."
+          }
+          if (-not (Test-Path $vst3ArchPath)) {
+            throw "VST3 architecture folder was not found: $vst3ArchPath"
+          }
+          Copy-Item "vendor/directml/bin/DirectML.dll" "$vst3ArchPath/"
+
+          foreach ($f in "fcpe.onnx", "cent_table.bin", "mel_filterbank.bin", "pc_nsf_hifigan.onnx") {
+            Copy-Item "Resources/models/$f" "$name/models/"
+          }
+          Copy-Item -Recurse "Resources/models/GAME" "$name/models/"
+          Copy-Item LICENSE, THIRD_PARTY_NOTICES.txt, MODIFICATIONS.md "$name/"
+          Copy-Item licenses/* "$name/licenses/"
+          Copy-Item packaging/INSTALL-Windows.txt "$name/INSTALL.txt"
+
+          Compress-Archive -Path $name -DestinationPath "$name.zip"
+          "zip_name=$name" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Attach to the release
+        if: ${{ inputs.ref == '' }}
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ZIP_NAME: ${{ steps.package.outputs.zip_name }}
+        run: gh release upload "$env:RELEASE_TAG" "$env:ZIP_NAME.zip" --repo "$env:GITHUB_REPOSITORY" --clobber
+
+      - name: Keep the test build as a workflow artifact
+        if: ${{ inputs.ref != '' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ steps.package.outputs.zip_name }}-test
+          path: ${{ steps.package.outputs.zip_name }}.zip
+          retention-days: 7
 
