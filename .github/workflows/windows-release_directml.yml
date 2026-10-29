@@ -1,7 +1,7 @@
 # Builds the Windows (x64, DirectML) VST3 for an existing GitHub release
 # and attaches the ZIP to it. Test builds use the supplied ref and keep the
 # ZIP as a workflow artifact without changing the release.
-name: Windows release build
+name: Windows release build_directml
 
 on:
   workflow_dispatch:
