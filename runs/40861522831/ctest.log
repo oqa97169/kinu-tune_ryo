@@ -1,0 +1,73 @@
+Test project /Users/runner/work/kinu-tune/kinu-tune/build
+      Start  1: AraRegionMergeTests
+ 1/34 Test  #1: AraRegionMergeTests ..............   Passed    0.04 sec
+      Start  2: AraRegionSliceTests
+ 2/34 Test  #2: AraRegionSliceTests ..............   Passed    0.02 sec
+      Start  3: FormantShiftTests
+ 3/34 Test  #3: FormantShiftTests ................   Passed    0.09 sec
+      Start  4: GuidedPitchCorrectionTests
+ 4/34 Test  #4: GuidedPitchCorrectionTests .......   Passed    0.02 sec
+      Start  5: GuideSourceTests
+ 5/34 Test  #5: GuideSourceTests .................   Passed    0.02 sec
+      Start  6: MidiFileReaderTests
+ 6/34 Test  #6: MidiFileReaderTests ..............   Passed    0.02 sec
+      Start  7: MidiGuideCorrectionTests
+ 7/34 Test  #7: MidiGuideCorrectionTests .........   Passed    0.03 sec
+      Start  8: RegionMappingTests
+ 8/34 Test  #8: RegionMappingTests ...............   Passed    0.02 sec
+      Start  9: TimingAnchorsTests
+ 9/34 Test  #9: TimingAnchorsTests ...............   Passed    0.02 sec
+      Start 10: TimingCorrectionTests
+10/34 Test #10: TimingCorrectionTests ............   Passed    0.03 sec
+      Start 11: TransitionSmoothingTests
+11/34 Test #11: TransitionSmoothingTests .........   Passed    0.01 sec
+      Start 12: TimingMapTests
+12/34 Test #12: TimingMapTests ...................   Passed    0.04 sec
+      Start 13: HarmonyIntervalTests
+13/34 Test #13: HarmonyIntervalTests .............   Passed    0.02 sec
+      Start 14: HostSyncTempoTests
+14/34 Test #14: HostSyncTempoTests ...............   Passed    0.47 sec
+      Start 15: NoteGainCurveTests
+15/34 Test #15: NoteGainCurveTests ...............   Passed    0.06 sec
+      Start 16: NonAraLifecycleTests
+16/34 Test #16: NonAraLifecycleTests .............   Passed    0.04 sec
+      Start 17: OriginalWaveformRestoreTests
+17/34 Test #17: OriginalWaveformRestoreTests .....   Passed    0.03 sec
+      Start 18: PitchDrawingTests
+18/34 Test #18: PitchDrawingTests ................   Passed    0.02 sec
+      Start 19: PitchDriftTests
+19/34 Test #19: PitchDriftTests ..................   Passed    0.03 sec
+      Start 20: PluginStateArchiveTests
+20/34 Test #20: PluginStateArchiveTests ..........   Passed    0.07 sec
+      Start 21: ProjectModificationRangeTests
+21/34 Test #21: ProjectModificationRangeTests ....   Passed    0.04 sec
+      Start 22: TimelineCoordinateTests
+22/34 Test #22: TimelineCoordinateTests ..........   Passed    0.03 sec
+      Start 23: VisualWaveformEnvelopeTests
+23/34 Test #23: VisualWaveformEnvelopeTests ......   Passed    0.02 sec
+      Start 24: PitchMacroScopeTests
+24/34 Test #24: PitchMacroScopeTests .............   Passed    0.02 sec
+      Start 25: TrackUndoTests
+25/34 Test #25: TrackUndoTests ...................   Passed    0.02 sec
+      Start 26: TrackGestureTests
+26/34 Test #26: TrackGestureTests ................   Passed    0.55 sec
+      Start 27: PitchMacroRenderTests
+27/34 Test #27: PitchMacroRenderTests ............   Passed    0.32 sec
+      Start 28: HarmonyApplyTests
+28/34 Test #28: HarmonyApplyTests ................   Passed    0.10 sec
+      Start 29: VariAudioControlTests
+29/34 Test #29: VariAudioControlTests ............   Passed    0.09 sec
+      Start 30: VariAudioInspectorTests
+30/34 Test #30: VariAudioInspectorTests ..........   Passed    0.34 sec
+      Start 31: AuditionOutputTests
+31/34 Test #31: AuditionOutputTests ..............   Passed    0.77 sec
+      Start 32: AuditionHandoffTests
+32/34 Test #32: AuditionHandoffTests .............   Passed    3.15 sec
+      Start 33: SourceGuard_pitch-writes
+33/34 Test #33: SourceGuard_pitch-writes .........   Passed    0.32 sec
+      Start 34: SourceGuard_audition-output
+34/34 Test #34: SourceGuard_audition-output ......   Passed    0.22 sec
+
+100% tests passed out of 34
+
+Total Test time (real) =   7.16 sec
